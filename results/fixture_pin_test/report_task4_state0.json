@@ -1,0 +1,108 @@
+{
+ "task": 4,
+ "state": 0,
+ "seed_a": {
+  "frame_sha1": {
+   "image": "1adea2b654ce",
+   "image2": "3e61de729b2d"
+  },
+  "max_abs_pixel_diff_vs_seed_a": {
+   "image": 0,
+   "image2": 0
+  },
+  "changed_pixels_pct_vs_seed_a": {
+   "image": 0.0,
+   "image2": 0.0
+  },
+  "fixture_pos_mm": {
+   "wooden_cabinet_1": [
+    20.6,
+    -260.4,
+    905.0
+   ],
+   "flat_stove_1": [
+    -405.9,
+    -142.8,
+    905.0
+   ]
+  }
+ },
+ "seed_a_again": {
+  "frame_sha1": {
+   "image": "1adea2b654ce",
+   "image2": "3e61de729b2d"
+  },
+  "max_abs_pixel_diff_vs_seed_a": {
+   "image": 0,
+   "image2": 0
+  },
+  "changed_pixels_pct_vs_seed_a": {
+   "image": 0.0,
+   "image2": 0.0
+  },
+  "fixture_pos_mm": {
+   "wooden_cabinet_1": [
+    20.6,
+    -260.4,
+    905.0
+   ],
+   "flat_stove_1": [
+    -405.9,
+    -142.8,
+    905.0
+   ]
+  }
+ },
+ "seed_b": {
+  "frame_sha1": {
+   "image": "2e37ea28efc8",
+   "image2": "4f8f5284e000"
+  },
+  "max_abs_pixel_diff_vs_seed_a": {
+   "image": 165,
+   "image2": 194
+  },
+  "changed_pixels_pct_vs_seed_a": {
+   "image": 12.39,
+   "image2": 16.26
+  },
+  "fixture_pos_mm": {
+   "wooden_cabinet_1": [
+    27.1,
+    -267.9,
+    905.0
+   ],
+   "flat_stove_1": [
+    -400.2,
+    -136.6,
+    905.0
+   ]
+  }
+ },
+ "seed_b_pinned_to_a": {
+  "frame_sha1": {
+   "image": "1adea2b654ce",
+   "image2": "3e61de729b2d"
+  },
+  "max_abs_pixel_diff_vs_seed_a": {
+   "image": 0,
+   "image2": 0
+  },
+  "changed_pixels_pct_vs_seed_a": {
+   "image": 0.0,
+   "image2": 0.0
+  },
+  "fixture_pos_mm": {
+   "wooden_cabinet_1": [
+    27.1,
+    -267.9,
+    905.0
+   ],
+   "flat_stove_1": [
+    -400.2,
+    -136.6,
+    905.0
+   ]
+  }
+ }
+}

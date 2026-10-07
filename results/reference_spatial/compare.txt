@@ -1,0 +1,31 @@
+{
+ "n": 500,
+ "run_a": "spatial_a1_500_seed1000",
+ "run_b": "spatial_a1_500_seed1001",
+ "success_a": 70.8,
+ "ci_a": [
+  66.66799846544006,
+  74.61481740367435
+ ],
+ "success_b": 69.6,
+ "ci_b": [
+  65.43125331560312,
+  73.46986163798547
+ ],
+ "sec_per_episode": [
+  15.703360795497895,
+  15.38837376499176
+ ],
+ "flips": 146,
+ "flip_rate": 0.292,
+ "r_points_at_this_n": 1.7088007490635062,
+ "r_points_at_2000": 0.8544003745317531,
+ "assumption": "r at 2000 assumes the Spatial flip rate holds for all four suites",
+ "init_hash_mismatches": 0,
+ "first_frame_mismatches": 500,
+ "pass_pipeline": false,
+ "pass_hashes": false,
+ "pass_noise": false,
+ "seed_count_rule": "5 seeds + fallback title"
+}
+STOP: Spatial 70.8% / 69.6% (anchor 78.8); flips 146/500; r=0.85 pts at 2000 eps -> 5 seeds + fallback title; hash mismatches init 0, frame 500
