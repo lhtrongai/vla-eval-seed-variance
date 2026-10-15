@@ -1,26 +1,51 @@
-# vla-seed-variance
+# vla-eval-seed-variance
 
-How much do evaluation and training seeds move the success rate of vision-language-action (VLA) policies on LIBERO, and what in the simulator moves with them.
+How much does the evaluation seed move the result of a vision-language-action (VLA) policy on LIBERO, and how much of that comes from the policy's own sampling noise versus the placement of fixed furniture in the scene?
 
-## Reference cell: released SmolVLA on LIBERO-Spatial
+In `lerobot-eval`, one `--seed` drives both: it seeds the policy's random noise and it also moves the cabinet and stove that LIBERO places at every reset. This repository separates the two for the released SmolVLA checkpoint.
 
-Checkpoint `HuggingFaceVLA/smolvla_libero`, LeRobot's LIBERO evaluation (one executed action per step, batch of 50 environments per task, one process), the 50 initial states of each of the 10 tasks (500 episodes), run twice with evaluation seeds 1000 and 1001.
+## Setup
 
-| Evaluation seed | Successes | Success rate (95% Wilson) |
-|---|---|---|
-| 1000 | 354 / 500 | 70.8 [66.7, 74.6] |
-| 1001 | 348 / 500 | 69.6 [65.4, 73.5] |
+- Checkpoint `HuggingFaceVLA/smolvla_libero` (revision 6721902), LeRobot's LIBERO evaluation (`lerobot-eval`, batch of 50 environments per task, one executed action per prediction, AMP off), MuJoCo 3.3.7, unmodified LIBERO textures.
+- LIBERO-Spatial, LIBERO-Object and LIBERO-Goal: the 50 stored initial states of each of the 10 tasks, 500 episodes per suite.
+- Cells:
+  - A: seed 1000.
+  - B: seed 1001 (policy noise and furniture placement both change).
+  - C: policy seed 1001 on the furniture placement of seed 1000 (only the policy noise changes). Not run on Object, which has no fixed furniture.
+  - Same-seed reruns, to measure the compute floor.
+  - Deterministic control: OpenVLA-7B on LIBERO-Spatial, environment seed 0 against 1 (200 episodes).
 
-146 of 500 paired episodes (29.2%) change outcome between the two seeds. Initial-state hashes match in all 500 pairs, but first-frame hashes differ in all 500.
+## Results
 
-## Why the first frames differ
+Flips are paired episodes (same task and initial state) whose outcome changes between two cells.
 
-At every reset LIBERO re-samples the placement of fixed furniture (wooden cabinet, flat stove) and writes it into the MuJoCo model, not into the simulator state. Setting the stored initial state restores the movable objects and the robot but not the furniture, so the evaluation seed moves the furniture by a few millimetres. `scripts/fixture_pin_test.py` shows that with the furniture pinned to the same placement, the frames for two different seeds are pixel-identical: furniture placement is the only seed-dependent part of the scene.
+| Suite | Success A / B | Flips A vs B | Flips C vs B (furniture only) | Same-seed rerun |
+|---|---|---|---|---|
+| Spatial | 354 / 348 | 146 / 500 (29.2%) | 86 / 500 (17.2%) | 15 / 500 |
+| Goal | 375 / 368 | 115 / 500 (23.0%) | 72 / 500 (14.4%) | 17 / 500 |
+| Object | 390 / 385 | 105 / 500 (21.0%) | not applicable | 0 / 500 |
+
+Furniture term = flips(A vs B) minus flips(A vs C), paired bootstrap over episodes (20,000 draws):
+
+| Suite | Furniture term (points) | 95% CI | One-sided 95% upper bound |
+|---|---|---|---|
+| Spatial | +1.6 | [-2.0, +5.2] | 4.6 |
+| Goal | +2.4 | [-0.8, +5.8] | 5.2 |
+| Spatial and Goal pooled | +2.0 | [-0.5, +4.4] | 4.1 |
+
+Reading: changing the seed flips about a fifth to a third of the episodes, and almost all of that comes from the policy's own sampling noise. Moving the furniture on top of it adds at most about 4 points (pooled upper bound). Moving the furniture alone, with the noise held fixed, still flips 14-17% of episodes, so the scene is sensitive to it; the two sources overlap on the same fragile episodes. On the deterministic OpenVLA-7B, the environment seed alone flips 40 / 200 episodes (20.0%; success 80.5% to 86.5%, McNemar p = 0.081).
+
+Scope: one stochastic checkpoint and one deterministic control, in one pinned pipeline. The success levels sit below published SmolVLA numbers; every quantity here is a difference inside the same pipeline.
+
+## Why the first frames differ between seeds
+
+At every reset LIBERO re-samples the placement of fixed furniture (wooden cabinet, flat stove) and writes it into the MuJoCo model, not into the simulator state. Setting the stored initial state restores the movable objects and the robot but not the furniture, so the evaluation seed moves the furniture by a few millimetres. `scripts/fixture_pin_test.py` shows that with the furniture pinned, the first frames for two different seeds are pixel-identical: furniture placement is the only seed-dependent part of the scene.
 
 ## Files
 
 - `scripts/run_lerobot_libero_hashed.py`: runs `lerobot-eval` unchanged and logs every reset with the initial-state hash and a hash of each camera's first frame.
 - `scripts/compare_reruns.py`: pairs two runs by task and initial state; success rates, flips, hash checks.
-- `scripts/run_reference_cell.sh`: the two runs, the comparison and a push notification (`NTFY_TOPIC`).
-- `scripts/fixture_pin_test.py`: first-frame comparison with and without pinned furniture.
-- `results/`: per-run evaluation output, reset logs, paired episodes and test reports.
+- `scripts/run_reference_cell.sh`, `scripts/fixture_pin_test.py`: the first Spatial reference pair and the furniture-pinning check.
+- `eval_seed_study/scripts/`: the runner chain for all cells, `cell_stats.py` (paired statistics per pair of cells) and `final_analysis.py` (furniture term with bootstrap intervals).
+- `eval_seed_study/results/`: per-cell evaluation output and reset logs; `final_analysis.txt` holds the numbers above.
+- `results/`: the first Spatial reference pair and the furniture-pinning test.
