@@ -2,6 +2,7 @@
 # Reference cell: released SmolVLA on LIBERO-Spatial twice (same 500 states, evaluation seeds 1000 and 1001),
 # compare, notify; terminate the pod only on success (keep it for diagnosis on failure).
 set -u
+NT="ntfy.sh/${NTFY_TOPIC:?set NTFY_TOPIC}"  # fail at start, not after the runs
 cd /workspace/runs/dpl_ref_spatial
 export HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 MUJOCO_GL=egl TZ=ICT-7
 PY=/workspace/venvs/lerobot/bin/python
@@ -29,6 +30,6 @@ if [ "$status" = ok ]; then
     || status="compare failed"
 fi
 MSG="dpl-seeds reference cell: $status. $(tail -1 compare.txt 2>/dev/null) peak $(sort -k4 -n mem.log | tail -1 | awk '{print $4"/"$5" MB"}')"
-curl -s -d "$MSG" "ntfy.sh/${NTFY_TOPIC:?set NTFY_TOPIC}" > /dev/null
+curl -s -d "$MSG" "$NT" > /dev/null
 date "+%F %T $MSG" >> chain.log
 if [ "$status" = ok ]; then runpodctl remove pod "$RUNPOD_POD_ID" >> chain.log 2>&1; fi

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Remove the pod when the chain finishes, when no log was written for 30 min (hang), or at the 10:00 deadline.
+NT="ntfy.sh/${NTFY_TOPIC:?set NTFY_TOPIC}"  # fail at start, not when the pod must be removed
 DEADLINE=$(TZ=ICT-7 date -d "2026-10-12 10:00" +%s)
-bye() { curl -s -d "eval-seed watchdog: $1, removing pod" ntfy.sh/${NTFY_TOPIC:?set NTFY_TOPIC} > /dev/null
+bye() { curl -s -d "eval-seed watchdog: $1, removing pod" "$NT" > /dev/null
         date "+%F %T watchdog: $1, removing pod" >> /workspace/runs/eval_seed/chain.log
         runpodctl remove pod "$RUNPOD_POD_ID" >> /workspace/runs/eval_seed/chain.log 2>&1; exit 0; }
 while true; do

@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 set -u
+NT="ntfy.sh/${NTFY_TOPIC:?set NTFY_TOPIC}"  # fail at start, not after the first cell
 cd /workspace/runs/eval_seed
 export HF_HOME=/workspace/hf_cache HF_HUB_OFFLINE=1 MUJOCO_GL=egl TZ=ICT-7
 PY=/workspace/venvs/lerobot/bin/python; S=/workspace/libero-vla-eval/scripts
 P=/workspace/runs/eval_seed
-note() { date "+%F %T $*" >> chain.log; curl -s -d "eval-seed cells: $*" ntfy.sh/${NTFY_TOPIC:?set NTFY_TOPIC} > /dev/null; }
+note() { date "+%F %T $*" >> chain.log; curl -s -d "eval-seed cells: $*" "$NT" > /dev/null; }
 cell() {  # $1 out dir, $2 name, $3 suite, $4 seed, $5 scene shift
   date "+%F %T start $2" >> chain.log
   RESET_LOG=$1/$2_resets.jsonl SCENE_SEED_SHIFT=$5 $PY $S/run_lerobot_libero_logged.py \
