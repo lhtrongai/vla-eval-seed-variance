@@ -26,5 +26,5 @@
  "pass_pipeline": false,
  "pass_hashes": false,
  "pass_noise": false,
- "seed_count_rule": "5 seeds + fallback title"
+ "seed_count_rule": "5 seeds (noise above the planned range)"
 }

@@ -26,6 +26,6 @@
  "pass_pipeline": false,
  "pass_hashes": false,
  "pass_noise": false,
- "seed_count_rule": "5 seeds + fallback title"
+ "seed_count_rule": "5 seeds (noise above the planned range)"
 }
-STOP: Spatial 70.8% / 69.6% (anchor 78.8); flips 146/500; r=0.85 pts at 2000 eps -> 5 seeds + fallback title; hash mismatches init 0, frame 500
+STOP: Spatial 70.8% / 69.6% (anchor 78.8); flips 146/500; r=0.85 pts at 2000 eps -> 5 seeds (noise above the planned range); hash mismatches init 0, frame 500

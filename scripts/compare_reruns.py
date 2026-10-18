@@ -76,7 +76,7 @@ def main(run_a, run_b):
     elif r_ref <= 0.8:
         seeds = "8 seeds"
     else:
-        seeds = "5 seeds + fallback title"
+        seeds = "5 seeds (noise above the planned range)"
 
     out = {"n": n, "run_a": run_a, "run_b": run_b,
            "success_a": pa, "ci_a": wilson(ka, n), "success_b": pb, "ci_b": wilson(kb, n),

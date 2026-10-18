@@ -48,4 +48,4 @@ At every reset LIBERO re-samples the placement of fixed furniture (wooden cabine
 - `scripts/run_reference_cell.sh`, `scripts/fixture_pin_test.py`: the first Spatial reference pair and the furniture-pinning check.
 - `eval_seed_study/scripts/`: the runner chain for all cells, `cell_stats.py` (paired statistics per pair of cells) and `final_analysis.py` (furniture term with bootstrap intervals).
 - `eval_seed_study/results/`: per-cell evaluation output and reset logs; `final_analysis.txt` holds the numbers above.
-- `results/`: the first Spatial reference pair and the furniture-pinning test.
+- `results/`: the first Spatial reference pair and the furniture-pinning test. `results/reference_spatial/compare.txt` ends with the verdict of the pipeline check set before the study, STOP: the seed-1000 run lands 8 points below the published 78.8% (70.8%), and the first frames differ in all 500 pairs, which is what moving the furniture does. That is why this study reports only differences inside one pipeline, not success levels.
