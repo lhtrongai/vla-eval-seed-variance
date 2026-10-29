@@ -1,0 +1,171 @@
+{
+  "argv": [
+    "--policy.path=HuggingFaceVLA/smolvla_libero",
+    "--env.type=libero",
+    "--env.task=libero_spatial",
+    "--eval.batch_size=50",
+    "--eval.n_episodes=50",
+    "--eval.use_async_envs=false",
+    "--policy.n_action_steps=1",
+    "--policy.use_amp=false",
+    "--policy.device=cuda",
+    "--seed=1001",
+    "--output_dir=/workspace/runs/smolvla_spatial_seed1001_free_logged_2026-10-28/eval"
+  ],
+  "start": {
+    "host": "3934fdcdd5db",
+    "runpod_pod_id": "ee8pdy41ely9w6",
+    "gpu": "NVIDIA RTX PRO 4500 Blackwell",
+    "gpu_driver": "595.91.07",
+    "cpu": "AMD EPYC 7713 64-Core Processor",
+    "mujoco_gl": "egl",
+    "time": "2026-10-28 23:59:31"
+  },
+  "versions": {
+    "torch": "2.8.0+cu128",
+    "mujoco": "3.3.7",
+    "robosuite": "1.4.0",
+    "numpy": "2.2.6",
+    "gymnasium": "1.4.0",
+    "transformers": "5.5.4"
+  },
+  "packages": {
+    "lerobot": "0.6.2",
+    "hf-libero": "0.1.4",
+    "huggingface-hub": "1.33.0"
+  },
+  "lerobot": {
+    "path": "/workspace/lerobot/src/lerobot",
+    "commit": "8c920c4270460851cedd2737657584586d3dc66f",
+    "uncommitted_changes": false
+  },
+  "libero_package": "/workspace/venvs/lerobot/lib/python3.12/site-packages/libero/libero",
+  "textures": {
+    "assets_dir": "/root/.cache/libero/assets",
+    "files": {
+      "textures/light-gray-floor-tile.png": {
+        "sha1": "8a9382967918924988e5f8b79fd2a563c11dea3d",
+        "srgb_tag": true
+      },
+      "textures/tile_grigia_caldera_porcelain_floor.png": {
+        "sha1": "8a9382967918924988e5f8b79fd2a563c11dea3d",
+        "srgb_tag": true
+      },
+      "stable_hope_objects/salad_dressing/texture_map.png": {
+        "sha1": "3f4f37845ba70af0688ad5620c2b5a6954f6c983",
+        "srgb_tag": true
+      },
+      "stable_hope_objects/new_salad_dressing/texture_map.png": {
+        "sha1": "3f4f37845ba70af0688ad5620c2b5a6954f6c983",
+        "srgb_tag": true
+      }
+    },
+    "srgb_tagged_files": 4
+  },
+  "camera_textures": {
+    "agentview": {
+      "look": "dark",
+      "sha1": "e003e6411cc06dbd6d15f9375b7be13259795e31",
+      "textures": {
+        "textures/light-gray-floor-tile.png": {
+          "colorspace": "sRGB",
+          "size": [
+            255,
+            255,
+            3
+          ],
+          "data_sha1": "17482b76e0af4c248f7df9584d46253ec6e546a0"
+        },
+        "textures/tile_grigia_caldera_porcelain_floor.png": {
+          "colorspace": "sRGB",
+          "size": [
+            255,
+            255,
+            3
+          ],
+          "data_sha1": "17482b76e0af4c248f7df9584d46253ec6e546a0"
+        },
+        "stable_hope_objects/salad_dressing/texture_map.png": {
+          "colorspace": "sRGB",
+          "size": [
+            2048,
+            2048,
+            3
+          ],
+          "data_sha1": "81fa81d00bafa010ca9cb1e91ead1d675c7d3a44"
+        },
+        "stable_hope_objects/new_salad_dressing/texture_map.png": {
+          "colorspace": "sRGB",
+          "size": [
+            2048,
+            2048,
+            3
+          ],
+          "data_sha1": "81fa81d00bafa010ca9cb1e91ead1d675c7d3a44"
+        }
+      }
+    },
+    "robot0_eye_in_hand": {
+      "look": "dark",
+      "sha1": "e003e6411cc06dbd6d15f9375b7be13259795e31",
+      "textures": {
+        "textures/light-gray-floor-tile.png": {
+          "colorspace": "sRGB",
+          "size": [
+            255,
+            255,
+            3
+          ],
+          "data_sha1": "17482b76e0af4c248f7df9584d46253ec6e546a0"
+        },
+        "textures/tile_grigia_caldera_porcelain_floor.png": {
+          "colorspace": "sRGB",
+          "size": [
+            255,
+            255,
+            3
+          ],
+          "data_sha1": "17482b76e0af4c248f7df9584d46253ec6e546a0"
+        },
+        "stable_hope_objects/salad_dressing/texture_map.png": {
+          "colorspace": "sRGB",
+          "size": [
+            2048,
+            2048,
+            3
+          ],
+          "data_sha1": "81fa81d00bafa010ca9cb1e91ead1d675c7d3a44"
+        },
+        "stable_hope_objects/new_salad_dressing/texture_map.png": {
+          "colorspace": "sRGB",
+          "size": [
+            2048,
+            2048,
+            3
+          ],
+          "data_sha1": "81fa81d00bafa010ca9cb1e91ead1d675c7d3a44"
+        }
+      }
+    }
+  },
+  "camera_texture_looks": null,
+  "seed": "1001",
+  "scene_seed_shift": 0,
+  "logs": {
+    "resets": "/workspace/runs/smolvla_spatial_seed1001_free_logged_2026-10-28/spatial_seed1001_free_resets.jsonl",
+    "noise": "/workspace/runs/smolvla_spatial_seed1001_free_logged_2026-10-28/spatial_seed1001_free_resets_noise.jsonl"
+  },
+  "end": "2026-10-29 02:21:34",
+  "counts": {
+    "explicit": 500,
+    "autoreset": 689,
+    "noise_calls": 2800,
+    "batches": 10
+  },
+  "policy": {
+    "path": "HuggingFaceVLA/smolvla_libero",
+    "revision": "6721902bc4d61e50a3bfdb11dfb4cb626f05d102",
+    "local_dir": "/workspace/hf_cache/hub/models--HuggingFaceVLA--smolvla_libero/snapshots/6721902bc4d61e50a3bfdb11dfb4cb626f05d102",
+    "model_sha1": "014100e1fd337fd39d2d54b73e2ea81ffecb26d3"
+  }
+}

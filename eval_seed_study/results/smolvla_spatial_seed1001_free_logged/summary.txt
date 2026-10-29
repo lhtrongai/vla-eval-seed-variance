@@ -1,0 +1,15 @@
+SmolVLA LIBERO-Spatial, seed 1001, furniture free (cell B), rerun on 28-29 October 2026 with the logging runner
+(run_lerobot_libero_logged.py: per-reset furniture poses, first-frame hashes and noise-stream hashes), same arguments as
+every other cell: batch 50, one executed action per prediction, AMP off, synchronous environments, MuJoCo 3.3.7.
+Run script: eval_seed_study/scripts/run_spatial_seed1001_free_logged.sh.
+
+Success: 349/500 = 69.8%; the first B run (7 October 2026, runner without noise logging) had 348/500.
+  This run vs the first B run: 9/500 episodes change outcome (1.8%), below the same-seed rerun floor of Spatial (15/500).
+Against cell C (policy seed 1001 on the furniture of seed 1000), from compare_vs_pinned.txt:
+  initial noise identical 500/500, noise streams identical on 10/10 tasks (280 draws per task in both runs),
+  furniture identical 0/500 (median shift 12.3 mm, max 23.0 mm), first frames identical 0/500.
+Scene sensitivity with the policy noise held fixed, C vs this run: 83/500 = 16.6% of episodes change outcome
+  (lost 47, gained 36, exact McNemar p = 0.272); with the first B run it read 86/500 = 17.2%.
+Furniture term on Spatial, flips(A vs B) - flips(A vs C), paired bootstrap over episodes (20,000 draws, seed 20261029):
+  with this run: +2.2 points, 95% CI [-1.4, +5.8], one-sided 95% upper bound 5.2
+  with the first B run: +1.6 points, 95% CI [-2.0, +5.2], one-sided 95% upper bound 4.6

@@ -1,0 +1,6 @@
+episodes matched by (task, initial state): 500 (A has 500, B has 500)
+fixtures identical: 0/500; largest fixture xy shift per episode: median 12.3 mm, max 23.0 mm
+  per task: 0: 0/50, 1: 0/50, 2: 0/50, 3: 0/50, 4: 0/50, 5: 0/50, 6: 0/50, 7: 0/50, 8: 0/50, 9: 0/50
+first frames identical: 0/500 (per camera: image 0/500, image2 0/500)
+initial noise identical: 500/500
+noise streams identical: 10/10 tasks (draws per task A: [280, 280, 280, 280, 280, 280, 280, 280, 280, 280], B: [280, 280, 280, 280, 280, 280, 280, 280, 280, 280])
