@@ -1,6 +1,9 @@
 """eval-seed evaluation-seed study, final CPU-only analysis (standard library only).
 1. OpenVLA-7B env-seed-1 cell vs the env-seed-0 run on the same 200 episodes (states 0-19 of each task).
-2. Paired bootstrap of the fixture term flips(A vs B) - flips(A vs C) for SmolVLA on Spatial and Goal, and pooled."""
+2. Paired bootstrap of the fixture term flips(A vs B) - flips(A vs C) for SmolVLA on Spatial and Goal, and pooled;
+   Spatial also with the rerun of B that logs the noise stream (smolvla_spatial_seed1001_free_logged).
+3. Noise only (A vs C), furniture only (C vs B) and both (A vs B): flips, and how many episodes flip under both the
+   noise-only and the furniture-only change against the count expected if the two were independent."""
 import json, math, os, random
 
 R = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "results")
@@ -53,6 +56,7 @@ suites = {
     "Spatial": ("smolvla_spatial_seed1000", "smolvla_spatial_seed1001_free", "smolvla_spatial_seed1001_pinned"),
     "Goal": ("smolvla_goal_seed1000", "smolvla_goal_seed1001_free", "smolvla_goal_seed1001_pinned"),
     "Goal (A = same-runner floor run)": ("smolvla_goal_seed1000_rerun", "smolvla_goal_seed1001_free", "smolvla_goal_seed1001_pinned"),
+    "Spatial (B = logged rerun)": ("smolvla_spatial_seed1000", "smolvla_spatial_seed1001_free_logged", "smolvla_spatial_seed1001_pinned"),
 }
 diffs = {}
 for name, (a, b, c) in suites.items():
@@ -74,7 +78,27 @@ def boot(groups, reps=20000, seed=0):
 print("\n== Fixture term = flips(A vs B) - flips(A vs C), in points of the 500-episode rate; paired bootstrap over episodes, 20,000 draws")
 for name, groups in [("Spatial", [diffs["Spatial"]]), ("Goal", [diffs["Goal"]]),
                      ("Goal (A = same-runner floor run)", [diffs["Goal (A = same-runner floor run)"]]),
-                     ("Pooled Spatial + Goal", [diffs["Spatial"], diffs["Goal"]])]:
+                     ("Pooled Spatial + Goal", [diffs["Spatial"], diffs["Goal"]]),
+                     ("Spatial (B = logged rerun)", [diffs["Spatial (B = logged rerun)"]]),
+                     ("Pooled Spatial (B = logged rerun) + Goal", [diffs["Spatial (B = logged rerun)"], diffs["Goal"]])]:
     est = 100 * sum(sum(g) for g in groups) / sum(len(g) for g in groups)
     lo, hi, u95 = boot(groups)
     print(f"  {name}: {est:+.1f} points, 95% CI [{lo:+.1f}, {hi:+.1f}], one-sided 95% upper bound U = {u95:.1f}")
+
+# ---------- 3. The two parts of the seed do not add up ----------
+print("\n== Noise only (A vs C), furniture only (C vs B), both (A vs B): flips out of 500")
+FURNITURE_TASKS = {4, 7, 9}  # Spatial tasks whose bowl sits in or on furniture: cabinet drawer, stove, cabinet top
+for name in ("Spatial (B = logged rerun)", "Goal"):
+    A, B, C = (outcomes(r) for r in suites[name])
+    ks = sorted(set(A) & set(B) & set(C))
+    noise = {k for k in ks if A[k] != C[k]}
+    furniture = {k for k in ks if C[k] != B[k]}
+    both = {k for k in ks if A[k] != B[k]}
+    print(f"  {name}: noise only {len(noise)}, furniture only {len(furniture)}, both {len(both)}; flipped under noise only "
+          f"and under furniture only: {len(noise & furniture)} (independent: {len(noise) * len(furniture) / len(ks):.1f})")
+    if name.startswith("Spatial"):
+        for label, tasks in (("bowl in or on furniture (tasks 4, 7, 9)", FURNITURE_TASKS),
+                             ("other tasks", set(range(10)) - FURNITURE_TASKS)):
+            n = sum(k[0] in tasks for k in ks)
+            fu, no = sum(k[0] in tasks for k in furniture), sum(k[0] in tasks for k in noise)
+            print(f"    {label}: furniture only {fu}/{n} = {100 * fu / n:.1f}%, noise only {no}/{n} = {100 * no / n:.1f}%")

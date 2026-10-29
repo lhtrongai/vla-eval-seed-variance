@@ -10,3 +10,11 @@
   Goal: +2.4 points, 95% CI [-0.8, +5.8], one-sided 95% upper bound U = 5.2
   Goal (A = same-runner floor run): +2.0 points, 95% CI [-1.2, +5.2], one-sided 95% upper bound U = 4.8
   Pooled Spatial + Goal: +2.0 points, 95% CI [-0.5, +4.4], one-sided 95% upper bound U = 4.1
+  Spatial (B = logged rerun): +2.2 points, 95% CI [-1.4, +5.8], one-sided 95% upper bound U = 5.2
+  Pooled Spatial (B = logged rerun) + Goal: +2.3 points, 95% CI [-0.2, +4.7], one-sided 95% upper bound U = 4.3
+
+== Noise only (A vs C), furniture only (C vs B), both (A vs B): flips out of 500
+  Spatial (B = logged rerun): noise only 138, furniture only 83, both 149; flipped under noise only and under furniture only: 36 (independent: 22.9)
+    bowl in or on furniture (tasks 4, 7, 9): furniture only 34/150 = 22.7%, noise only 43/150 = 28.7%
+    other tasks: furniture only 49/350 = 14.0%, noise only 95/350 = 27.1%
+  Goal: noise only 103, furniture only 72, both 115; flipped under noise only and under furniture only: 30 (independent: 14.8)
