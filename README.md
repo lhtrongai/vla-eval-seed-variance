@@ -1,4 +1,4 @@
-# vla-eval-seed-variance
+# Evaluation seed on LIBERO: policy noise versus furniture placement
 
 How much does the evaluation seed move the result of a vision-language-action (VLA) policy on LIBERO, and how much of that comes from the policy's own sampling noise versus the placement of fixed furniture in the scene?
 
@@ -6,7 +6,7 @@ In `lerobot-eval`, one `--seed` drives both: it seeds the policy's random noise 
 
 ## Setup
 
-- Checkpoint `HuggingFaceVLA/smolvla_libero` (revision 6721902), LeRobot's LIBERO evaluation (`lerobot-eval`, batch of 50 environments per task, one executed action per prediction, AMP off), MuJoCo 3.3.7, unmodified LIBERO textures.
+- Checkpoint [`HuggingFaceVLA/smolvla_libero`](https://huggingface.co/HuggingFaceVLA/smolvla_libero) (revision 6721902), LeRobot's LIBERO evaluation (`lerobot-eval`, batch of 50 environments per task, one executed action per prediction, AMP off), MuJoCo 3.3.7, unmodified LIBERO textures.
 - LIBERO-Spatial, LIBERO-Object and LIBERO-Goal: the 50 stored initial states of each of the 10 tasks, 500 episodes per suite.
 - Cells:
   - A: seed 1000.
@@ -51,5 +51,34 @@ At every reset LIBERO re-samples the placement of fixed furniture (wooden cabine
 - `scripts/compare_reruns.py`: pairs two runs by task and initial state; success rates, flips, hash checks.
 - `scripts/run_reference_cell.sh`, `scripts/fixture_pin_test.py`: the first Spatial reference pair and the furniture-pinning check.
 - `eval_seed_study/scripts/`: the runner chain for all cells, `cell_stats.py` (paired statistics per pair of cells) and `final_analysis.py` (furniture term with bootstrap intervals, and the overlap of noise-only and furniture-only flips).
-- `eval_seed_study/results/`: per-cell evaluation output and reset logs; `final_analysis.txt` holds the numbers above. `smolvla_spatial_seed1001_free_logged/` is the Spatial rerun of B (run script `eval_seed_study/scripts/run_spatial_seed1001_free_logged.sh`, runner `run_lerobot_libero_logged.py` in libero-vla-eval); its `compare_vs_pinned.txt` checks the noise stream and furniture against cell C.
-- `results/`: the first Spatial reference pair and the furniture-pinning test. `results/reference_spatial/compare.txt` ends with the verdict of the pipeline check set before the study, STOP: the seed-1000 run lands 8 points below the published 78.8% (70.8%), and the first frames differ in all 500 pairs, which is what moving the furniture does. That is why this study reports only differences inside one pipeline, not success levels.
+- `eval_seed_study/results/`: per-cell evaluation output and reset logs; `final_analysis.txt` holds the numbers above. `smolvla_spatial_seed1001_free_logged/` is the Spatial rerun of B (run script `eval_seed_study/scripts/run_spatial_seed1001_free_logged.sh`, runner `run_lerobot_libero_logged.py` in [libero-vla-eval](https://github.com/lhtrongai/libero-vla-eval)); its `compare_vs_pinned.txt` checks the noise stream and furniture against cell C.
+- `results/`: the first Spatial reference pair and the furniture-pinning test. `results/reference_spatial/compare.txt` ends with the verdict of the pipeline check set before the study, STOP: the seed-1000 run lands 8 points below the 78.8% published for this checkpoint on Spatial with one executed action (SMILE, arXiv 2608.29432) (70.8%), and the first frames differ in all 500 pairs, which is what moving the furniture does. That is why this study reports only differences inside one pipeline, not success levels.
+- Result file names: `a1_500` means one executed action per prediction and 500 episodes; `free` means the furniture follows the evaluation seed, `pinned` means it is held at the placement of seed 1000. Paths inside the logged output (for example the video paths in `eval_info*.json`) are those of the machine the runs used.
+
+## Reproduce the analysis (CPU, standard library only, about 20 seconds)
+
+```bash
+python eval_seed_study/scripts/final_analysis.py   # prints eval_seed_study/results/final_analysis.txt
+```
+
+`final_analysis.py` reads only the committed files in `eval_seed_study/results/`. `cell_stats.py` and `compare_reruns.py` were run on the GPU machine right after each cell and expect that machine's layout (each run directory next to its `<run>_resets.jsonl` and `<run>.log`).
+
+## Rerun the evaluation (GPU)
+
+The runs use LeRobot's `lerobot-eval` through a logging wrapper that leaves the evaluation unchanged: `scripts/run_lerobot_libero_hashed.py` here for the first Spatial pair, and `scripts/run_lerobot_libero_logged.py` of [libero-vla-eval](https://github.com/lhtrongai/libero-vla-eval), which also logs the policy noise, for the other cells. The libero-vla-eval README lists the LeRobot environment (LeRobot commit `8c920c4`, hf-libero, MuJoCo 3.3.7) and `env/requirements-lerobot-venv.txt`. Every cell uses the same arguments and changes only `--seed` and `SCENE_SEED_SHIFT`:
+
+```bash
+# cell B on Spatial: seed 1001, furniture follows the seed
+RESET_LOG=runs/spatial_seed1001_free_resets.jsonl SCENE_SEED_SHIFT=0 \
+python run_lerobot_libero_logged.py \
+  --policy.path=HuggingFaceVLA/smolvla_libero --env.type=libero --env.task=libero_spatial \
+  --eval.batch_size=50 --eval.n_episodes=50 --eval.use_async_envs=false \
+  --policy.n_action_steps=1 --policy.use_amp=false --policy.device=cuda \
+  --seed=1001 --output_dir=runs/spatial_seed1001_free
+```
+
+`--seed=1000 SCENE_SEED_SHIFT=0` gives cell A; `--seed=1001 SCENE_SEED_SHIFT=-1` gives cell C (seed-1001 policy noise on the furniture placement of seed 1000). `--env.task` selects the suite. `eval_seed_study/scripts/` holds the batch and watchdog scripts as they ran on one cloud GPU instance; they assume that machine's folder layout (`/workspace/...`) and need `NTFY_TOPIC` set for notifications.
+
+## License
+
+The code in this repository is under the MIT license (see `LICENSE`). SmolVLA, LeRobot and LIBERO are not included and keep their own licenses.
