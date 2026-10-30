@@ -14,7 +14,7 @@ from libero.libero import benchmark
 from lerobot.envs.libero import LiberoEnv, get_libero_dummy_action
 
 TASK, STATE, SEED_A, SEED_B = int(sys.argv[1]), int(sys.argv[2]), 1000, 1001
-OUT = "/workspace/runs/dpl_fixture_test"
+OUT = "/workspace/runs/fixture_pin_test"
 suite = benchmark.get_benchmark_dict()["libero_spatial"]()
 
 
