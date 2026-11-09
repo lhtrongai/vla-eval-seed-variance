@@ -1,0 +1,46 @@
+== 1. Success per cell, Wilson 95% interval
+  Spatial A (seed 1000): 354/500 = 70.8% [66.7, 74.6]
+  Spatial B (seed 1001, logged rerun): 349/500 = 69.8% [65.6, 73.7]
+  Spatial B (seed 1001, first run): 348/500 = 69.6% [65.4, 73.5]
+  Spatial C (noise 1001, furniture 1000): 360/500 = 72.0% [67.9, 75.8]
+  Goal A (seed 1000): 375/500 = 75.0% [71.0, 78.6]
+  Goal A (seed 1000, same-seed rerun): 374/500 = 74.8% [70.8, 78.4]
+  Goal B (seed 1001): 368/500 = 73.6% [69.6, 77.3]
+  Goal C (noise 1001, furniture 1000): 380/500 = 76.0% [72.1, 79.5]
+  Object A (seed 1000): 390/500 = 78.0% [74.2, 81.4]
+  Object B (seed 1001): 385/500 = 77.0% [73.1, 80.5]
+  OpenVLA-7B Spatial, env seed 0 (states 0-19): 161/200 = 80.5% [74.5, 85.4]
+  OpenVLA-7B Spatial, env seed 1 (states 0-19): 173/200 = 86.5% [81.1, 90.6]
+
+== 2. Paired comparisons: flips (fail->success / success->fail), Wilson 95% interval of the flip rate, McNemar exact p
+  Spatial A vs B (both): 149/500 = 29.8% [26.0, 34.0] (72 / 77), p = 0.743
+  Spatial A vs C (noise only): 138/500 = 27.6% [23.9, 31.7] (72 / 66), p = 0.671
+  Spatial C vs B (furniture only): 83/500 = 16.6% [13.6, 20.1] (36 / 47), p = 0.272
+  Spatial A vs first B: 146/500 = 29.2% [25.4, 33.3] (70 / 76), p = 0.679
+  Spatial C vs first B: 86/500 = 17.2% [14.1, 20.8] (37 / 49), p = 0.235
+  Spatial first B vs logged B: 9/500 = 1.8% [0.9, 3.4] (5 / 4), p = 1.000
+  Goal A vs B (both): 115/500 = 23.0% [19.5, 26.9] (54 / 61), p = 0.576
+  Goal A vs C (noise only): 103/500 = 20.6% [17.3, 24.4] (54 / 49), p = 0.694
+  Goal C vs B (furniture only): 72/500 = 14.4% [11.6, 17.7] (30 / 42), p = 0.195
+  Goal A vs same-seed rerun (floor): 17/500 = 3.4% [2.1, 5.4] (8 / 9), p = 1.000
+  Object A vs B (both): 105/500 = 21.0% [17.7, 24.8] (50 / 55), p = 0.696
+  OpenVLA-7B env seed 0 vs 1 (furniture only): 40/200 = 20.0% [15.0, 26.1] (26 / 14), p = 0.081
+
+== 3. Identity flips(A vs B) = flips(A vs C) + flips(C vs B) - 2 x shared; shared expected if independent = flips(A vs C) x flips(C vs B) / n
+  Spatial: 138 + 83 - 2 x 36 = 149 (A vs B: 149); shared expected 22.9
+  Goal: 103 + 72 - 2 x 30 = 115 (A vs B: 115); shared expected 14.8
+
+== 4. Spatial by task group; exploratory (bowl in or on furniture: tasks 4, 7, 9)
+  SmolVLA, tasks 4, 7, 9: both 51/150 = 34.0%; noise only 43/150 = 28.7%; furniture only 34/150 = 22.7%; furniture term +5.3 points [-2.0, +12.7]
+  OpenVLA-7B, tasks 4, 7, 9: env seed 0 vs 1 flips 17/60 = 28.3%
+  SmolVLA, other seven tasks: both 98/350 = 28.0%; noise only 95/350 = 27.1%; furniture only 49/350 = 14.0%; furniture term +0.9 points [-3.1, +4.9]
+  OpenVLA-7B, other seven tasks: env seed 0 vs 1 flips 23/140 = 16.4%
+
+== 5. Seed SD sqrt(f/2n) and minimum gap 2.802 x sqrt((fA+fB)/2n), points, n = 500
+  Spatial: f = 0.298; seed SD 1.73; minimum gap vs a model with the same f 6.84; vs OpenVLA-7B (f = 0.20) 6.25
+  Goal: f = 0.230; seed SD 1.52; minimum gap vs a model with the same f 6.01; vs OpenVLA-7B (f = 0.20) 5.81
+  Object: f = 0.210; seed SD 1.45; minimum gap vs a model with the same f 5.74; vs OpenVLA-7B (f = 0.00) 4.06
+
+== 6. Ranking check: SmolVLA minus OpenVLA-7B, points
+  Object (OpenVLA-7B 346/500 = 69.2%): A (seed 1000) +8.8; B (seed 1001) +7.8
+  Goal (OpenVLA-7B 388/500 = 77.6%): A (seed 1000) -2.6; B (seed 1001) -4.0; C (noise 1001, furniture 1000) -1.6; A (seed 1000, same-seed rerun) -2.8

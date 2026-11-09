@@ -50,8 +50,8 @@ At every reset LIBERO re-samples the placement of fixed furniture (wooden cabine
 - `scripts/run_lerobot_libero_hashed.py`: runs `lerobot-eval` unchanged and logs every reset with the initial-state hash and a hash of each camera's first frame.
 - `scripts/compare_reruns.py`: pairs two runs by task and initial state; success rates, flips, hash checks.
 - `scripts/run_reference_cell.sh`, `scripts/fixture_pin_test.py`: the first Spatial reference pair and the furniture-pinning check.
-- `eval_seed_study/scripts/`: the runner chain for all cells, `cell_stats.py` (paired statistics per pair of cells) and `final_analysis.py` (furniture term with bootstrap intervals, and the overlap of noise-only and furniture-only flips).
-- `eval_seed_study/results/`: per-cell evaluation output and reset logs; `final_analysis.txt` holds the numbers above. `smolvla_spatial_seed1001_free_logged/` is the Spatial rerun of B (run script `eval_seed_study/scripts/run_spatial_seed1001_free_logged.sh`, runner `run_lerobot_libero_logged.py` in [libero-vla-eval](https://github.com/lhtrongai/libero-vla-eval)); its `compare_vs_pinned.txt` checks the noise stream and furniture against cell C.
+- `eval_seed_study/scripts/`: the runner chain for all cells, `cell_stats.py` (paired statistics per pair of cells) `final_analysis.py` (furniture term with bootstrap intervals, and the overlap of noise-only and furniture-only flips) and `report_numbers.py` (the further numbers of the final report: Wilson intervals per cell and per pair, McNemar tests, the flip identity, the task-group split, seed standard deviations, minimum gaps and the ranking check).
+- `eval_seed_study/results/`: per-cell evaluation output and reset logs; `final_analysis.txt` holds the numbers above and `report_numbers.txt` the further report numbers. `smolvla_spatial_seed1001_free_logged/` is the Spatial rerun of B (run script `eval_seed_study/scripts/run_spatial_seed1001_free_logged.sh`, runner `run_lerobot_libero_logged.py` in [libero-vla-eval](https://github.com/lhtrongai/libero-vla-eval)); its `compare_vs_pinned.txt` checks the noise stream and furniture against cell C.
 - `results/`: the first Spatial reference pair and the furniture-pinning test. `results/reference_spatial/compare.txt` ends with the verdict of the pipeline check set before the study, STOP: the seed-1000 run lands 8 points below the 78.8% published for this checkpoint on Spatial with one executed action (SMILE, arXiv 2608.29432) (70.8%), and the first frames differ in all 500 pairs, which is what moving the furniture does. That is why this study reports only differences inside one pipeline, not success levels.
 - Result file names: `a1_500` means one executed action per prediction and 500 episodes; `free` means the furniture follows the evaluation seed, `pinned` means it is held at the placement of seed 1000. Paths inside the logged output (for example the video paths in `eval_info*.json`) are those of the machine the runs used.
 
@@ -59,9 +59,18 @@ At every reset LIBERO re-samples the placement of fixed furniture (wooden cabine
 
 ```bash
 python eval_seed_study/scripts/final_analysis.py   # prints eval_seed_study/results/final_analysis.txt
+python eval_seed_study/scripts/report_numbers.py   # prints eval_seed_study/results/report_numbers.txt
 ```
 
-`final_analysis.py` reads only the committed files in `eval_seed_study/results/`. `cell_stats.py` and `compare_reruns.py` were run on the GPU machine right after each cell and expect that machine's layout (each run directory next to its `<run>_resets.jsonl` and `<run>.log`).
+Both scripts read only the committed files in `eval_seed_study/results/`. `cell_stats.py` and `compare_reruns.py` were run on the GPU machine right after each cell and expect that machine's layout (each run directory next to its `<run>_resets.jsonl` and `<run>.log`).
+
+## Numbers from outside this repository
+
+A few numbers in the report come from runs of the first author's related evaluation work in the same pinned pipeline, whose files are not in this repository:
+
+- Same-seed reruns (the compute floor): seed 1000 run twice on LIBERO-Spatial flips 15 of 500 episodes (70.8% and 71.0%), and on LIBERO-Object 0 of 500. The LIBERO-Goal floor (17 of 500) is in this repository.
+- OpenVLA-7B on the same 500 episodes of LIBERO-Object (346 / 500) and LIBERO-Goal (388 / 500), environment seed 0 with the original OpenVLA script; `report_numbers.py` uses these two counts for the ranking check.
+- The floor texture of LIBERO-Object: MuJoCo 3.3.3 and later render it about 26% darker than at training time; restoring the training-time look lifts SmolVLA on Object at seed 1000 from 390 to 434 of 500 episodes (63 gained, 19 lost).
 
 ## Rerun the evaluation (GPU)
 
